@@ -8,6 +8,5 @@ namespace TelephoneSystem
 {
     public class OutgoingCall:Call
     {
-
     }
 }

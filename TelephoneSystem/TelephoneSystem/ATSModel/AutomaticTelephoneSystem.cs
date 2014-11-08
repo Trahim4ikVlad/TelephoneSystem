@@ -1,56 +1,90 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace TelephoneSystem.ATSModel
 {
-    public class AutomaticTelephoneSystem:ICollection<Port>
+    public class AutomaticTelephoneSystem:ICollection<Abonent>
     {
+        private IList<Abonent> _abonents = new List<Abonent>();
 
 
-
-
-        public void Add(Port item)
+        private void ConnectionWith(string number)
         {
-            throw new System.NotImplementedException();
+            
+        }
+
+        # region implemention ICollection
+        public void Add(Abonent item)
+        {
+            _abonents.Add(item);
         }
 
         public void Clear()
         {
-            throw new System.NotImplementedException();
+            _abonents.Clear();
         }
 
-        public bool Contains(Port item)
+        public bool Contains(Abonent item)
         {
-            throw new System.NotImplementedException();
+            bool found = false;
+
+            foreach (var sentence in _abonents)
+            {
+                if (sentence.Equals(item))
+                {
+                    found = true;
+                }
+            }
+
+            return found;
         }
 
-        public void CopyTo(Port[] array, int arrayIndex)
+        public void CopyTo(Abonent[] array, int arrayIndex)
         {
-            throw new System.NotImplementedException();
+            for (int i = 0; i < _abonents.Count; i++)
+            {
+                array[i] = (Abonent)_abonents[i];
+            }
         }
 
         public int Count
         {
-            get { throw new System.NotImplementedException(); }
+            get { return _abonents.Count; }
         }
 
         public bool IsReadOnly
         {
-            get { throw new System.NotImplementedException(); }
+            get { return false; }
         }
 
-        public bool Remove(Port item)
+        public bool Remove(Abonent item)
         {
-            throw new System.NotImplementedException();
+            bool result = false;
+
+            for (int i = 0; i < _abonents.Count; i++)
+            {
+                Abonent cur = (Abonent)_abonents[i];
+                if (cur.Equals(item))
+                {
+                    _abonents.RemoveAt(i);
+                    result = true;
+                    break;
+                }
+            }
+            return result;
         }
 
-        public IEnumerator<Port> GetEnumerator()
+        public IEnumerator<Abonent> GetEnumerator()
         {
-            throw new System.NotImplementedException();
+            return _abonents.GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new System.NotImplementedException();
+            return GetEnumerator();
         }
+        # endregion
+
+
     }
 }

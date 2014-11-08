@@ -6,8 +6,20 @@ using System.Threading.Tasks;
 
 namespace TelephoneSystem.BillingSystem
 {
-    class Vip:TariffPlan
+    public class Vip:TariffPlan
     {
+        public Vip(DateTime connection)
+        {
+            this.DateConnection = connection;
+        }
+
+        public Vip(DateTime connection, double costMinute, double subscriberPay)
+        {
+            this.CostMinute = costMinute;
+            this.SubscriberPay = subscriberPay;
+            this.DateConnection = connection;
+        }
+
 
     }
 }

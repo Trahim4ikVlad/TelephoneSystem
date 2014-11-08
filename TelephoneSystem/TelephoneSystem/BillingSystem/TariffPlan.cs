@@ -8,9 +8,10 @@ namespace TelephoneSystem.BillingSystem
 {
     public abstract class TariffPlan
     {
-        public double SubscriberPay { get; set; } 
-
+        public double SubscriberPay { get; set; }  
+     
         public double CostMinute { get; set; }
-
+       
+        public DateTime DateConnection { get; set; }
     }
 }

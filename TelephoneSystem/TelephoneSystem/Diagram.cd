@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="TelephoneSystem.BillingSystem.TariffPlan" Collapsed="true">
+    <Position X="1" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>BillingSystem\TariffPlan.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TelephoneSystem.BillingSystem.Vip" Collapsed="true">
+    <Position X="1" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BillingSystem\Vip.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TelephoneSystem.Call" Collapsed="true">
+    <Position X="2.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Call.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TelephoneSystem.IncomingCall" Collapsed="true">
+    <Position X="1" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IncomingCall.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TelephoneSystem.OutgoingCall" Collapsed="true">
+    <Position X="3.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>OutgoingCall.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TelephoneSystem.ATSModel.AutomaticTelephoneSystem" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAABAQAAACBAQAAAAAAAAEAAAAAABQIAA=</HashCode>
+      <FileName>ATSModel\AutomaticTelephoneSystem.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="TelephoneSystem.ATSModel.Port" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="5.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAggAAAAAAAAAAABIAAAQAAAgAAIAAAAAAAABAAAAAA=</HashCode>
+      <FileName>ATSModel\Port.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="TelephoneSystem.ATSModel.Terminal" Collapsed="true">
+    <Position X="7.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>ATSModel\Terminal.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TelephoneSystem.Abonent" Collapsed="true">
+    <Position X="5.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAABAEAAAAAAAAACAQAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Abonent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="TelephoneSystem.ATSModel.PortState" Collapsed="true">
+    <Position X="5.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAgAAAAIAAAAAAAAAAAAAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>ATSModel\PortState.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="TelephoneSystem.ATSModel.TerminalState" Collapsed="true">
+    <Position X="7.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAAAAAAAgAAEAAAAAAAAAAAAAEBAA=</HashCode>
+      <FileName>ATSModel\TerminalState.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

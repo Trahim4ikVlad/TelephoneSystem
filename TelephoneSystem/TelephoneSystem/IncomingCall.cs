@@ -8,5 +8,6 @@ namespace TelephoneSystem
 {
     class IncomingCall:Call
     {
+
     }
 }
