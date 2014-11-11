@@ -8,8 +8,43 @@ using TelephoneSystem.BillingSystem;
 
 namespace TelephoneSystem.ATSModel
 {
-    public class Port 
+    public class Port : IEquatable<Port>
     {
+
         public PortState State { get; set; }
-    }
+
+        public int PhoneNumber { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Port) obj);
+        }
+        
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((int) State*397) ^ PhoneNumber;
+            }
+        }
+
+        public static bool operator ==(Port left, Port right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(Port left, Port right)
+        {
+            return !Equals(left, right);
+        }
+
+        public bool Equals(Port other)
+        {
+            return State == other.State && PhoneNumber == other.PhoneNumber;
+        }
+
+   }
 }

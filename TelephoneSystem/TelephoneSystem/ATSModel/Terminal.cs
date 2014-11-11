@@ -1,51 +1,48 @@
 ﻿using System;
 using TelephoneSystem.BillingSystem;
+using TelephoneSystem.EventArgsChildren;
 
 namespace TelephoneSystem.ATSModel
 {
     public class Terminal
     {
-        public TerminalState State { get; set; }
 
-        public event EventHandler<EventArgs> BeginningCall;
-        public event EventHandler<EventArgs> Called;
-        public event EventHandler<EventArgs> FinichingCall;
+        public event EventHandler<EventArgsCall> BeginningCall;
+        public event EventHandler<EventArgsCall> Called;
+        public event EventHandler<EventArgsFinishCall> FinishingCall;
 
         protected virtual void OnFinishingCall()
         {
-            EventHandler<EventArgs> handler = FinichingCall;
-            if (handler != null) handler(this, EventArgs.Empty);
-
+            EventHandler<EventArgsFinishCall> handler = FinishingCall;
+            if (handler != null) handler(this, new EventArgsFinishCall());
         }
-
 
         protected virtual void OnCall()
         {
-            EventHandler<EventArgs> handler = Called;
-            if (handler != null) handler(this, EventArgs.Empty);
+            EventHandler<EventArgsCall> handler = Called;
+            if (handler != null) handler(this, new EventArgsCall());
         }
 
         protected virtual void OnStartCall()
         {
-            EventHandler<EventArgs> handler = BeginningCall;
-            if (handler != null) handler(this, EventArgs.Empty);
+            EventHandler<EventArgsCall> handler = BeginningCall;
+
+            if (handler != null) handler(this, new EventArgsCall());
         }
 
         public void StartCall()
         {
-            this.State = TerminalState.OutboundSet;
             OnStartCall();
         }
 
         public void Call()
         {
-            this.State = TerminalState.ConversationalState;
+
             OnCall();
         }
 
         public void FinishCall()
         {
-            this.State = TerminalState.InitialState;
             OnFinishingCall();
         }
     }

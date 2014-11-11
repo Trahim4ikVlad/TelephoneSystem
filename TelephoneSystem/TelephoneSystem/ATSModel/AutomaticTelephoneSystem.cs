@@ -1,45 +1,48 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TelephoneSystem.EventArgsChildren;
 
 namespace TelephoneSystem.ATSModel
 {
-    public class AutomaticTelephoneSystem:ICollection<Abonent>
+    public class AutomaticTelephoneSystem
     {
         private IList<Abonent> _abonents = new List<Abonent>();
+        
+        private  IList<CallInfo> _callsInfo = new List<CallInfo>();
+
+        //отчет по абоненту
+        public IList<CallInfo> FilterBy(Abonent abonent)
+        {
+
+         return   _callsInfo.Where(
+                x => x.IngoingNumber == abonent.Port.PhoneNumber || x.OutgoingNumber == abonent.Port.PhoneNumber)
+                .ToList();
+        }
 
         private IList<Abonent> PublicAbonents()
         {
-            return _abonents.Where(x => (x.Port.State == PortState.Open) && x.Terminal.State == TerminalState.InitialState).ToList();
+            return _abonents.Where(x => x.Port.State == PortState.Connected).ToList();
         }
 
 
-        private void ConnectionWith(int phoneNumber)
+        public void AddAbonent(Abonent item)
         {
-            Abonent abonent = new Abonent(phoneNumber);
-
-            if (PublicAbonents().Contains(abonent))
-            {
-                abonent.Port.State = PortState.Closed;
-            }
-        }
-
-        public AutomaticTelephoneSystem()
-        {
-            
-        }
-
-
-
-        # region implemention ICollection<Abonent>
-        public void Add(Abonent item)
-        {
+            if(!_abonents.Contains(item))
             _abonents.Add(item);
+            item.Terminal.FinishingCall+=Terminal_FinishingCall;
+
         }
 
-        public void Clear()
+        private void Terminal_FinishingCall(object sender, EventArgsFinishCall e)
         {
-            _abonents.Clear();
+            AddCallInfo(e.CallInfo);
+        }
+
+        public void AddCallInfo(CallInfo info)
+        {
+            _callsInfo.Add(info);
         }
 
         public bool Contains(Abonent item)
@@ -56,53 +59,5 @@ namespace TelephoneSystem.ATSModel
 
             return found;
         }
-
-        public void CopyTo(Abonent[] array, int arrayIndex)
-        {
-            for (int i = 0; i < _abonents.Count; i++)
-            {
-                array[i] = (Abonent)_abonents[i];
-            }
-        }
-
-        public int Count
-        {
-            get { return _abonents.Count; }
-        }
-
-        public bool IsReadOnly
-        {
-            get { return false; }
-        }
-
-        public bool Remove(Abonent item)
-        {
-            bool result = false;
-
-            for (int i = 0; i < _abonents.Count; i++)
-            {
-                Abonent cur = (Abonent)_abonents[i];
-                if (cur.Equals(item))
-                {
-                    _abonents.RemoveAt(i);
-                    result = true;
-                    break;
-                }
-            }
-            return result;
-        }
-
-        public IEnumerator<Abonent> GetEnumerator()
-        {
-            return _abonents.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-        # endregion
-
-
     }
 }

@@ -2,8 +2,9 @@
 {
     public enum PortState
     {
-        Open,
-        Closed,
-        BLocked
+        Connected,
+        Disabled,
+        BLocked,
+        Call
     }
 }

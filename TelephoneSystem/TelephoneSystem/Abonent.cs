@@ -5,63 +5,102 @@ using System.Text;
 using System.Threading.Tasks;
 using TelephoneSystem.ATSModel;
 using TelephoneSystem.BillingSystem;
+using TelephoneSystem.EventArgsChildren;
 
 namespace TelephoneSystem
 {
-    public class Abonent
+    public class Abonent : IEquatable<Abonent>
     {
-        
-        public Port Port { get; set; }
        
-        public  Terminal Terminal { get; set; }
+        public Port Port { get; set; }
+
+        public Terminal Terminal { get; set; }
+
+        public TariffPlan TariffPlan { get; set; }
+
+
+        public Abonent(Port port, TariffPlan plan, Terminal terminal)
+        {
+            this.Port = port;
+            this.TariffPlan = plan;
+            this.Terminal = terminal;
+            SubscribeToEvents();
+        }
+
+        private void SubscribeToEvents()
+        {
+            Terminal.BeginningCall += Terminal_BeginningCall;
+            Terminal.Called += Terminal_Called;
+            Terminal.FinishingCall += Terminal_FinishingCall;            
+        }
+
+        public void DisconnectFromPort()
+        {
         
-        public TariffPlan CurrentTariffPlan { get; set; }
-
-        public int PhoneNumber { get; private set; }
-
-        public double Balance { get; set; }
-
-        private  IList<Call> _calls = new List<Call>(); 
-
-
-        public Abonent(int phoneNumber)
-        {
-            this.PhoneNumber = phoneNumber;
-
-            Terminal.BeginningCall+=Terminal_BeginningCall;
-            Terminal.Called+=Terminal_Called;
-            Terminal.FinichingCall+=Terminal_FinichingCall;
-
-            this.Port = new Port();
+            this.Port.State = PortState.Disabled;
+        
         }
 
-        public IEnumerable<Call> Calls()
+        public void ConnectToPort()
         {
-            return _calls;
+            this.Port.State = PortState.Connected;
         }
 
-        private void Terminal_FinichingCall(object sender, EventArgs e)
+        private void Terminal_FinishingCall(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Port.State = PortState.Connected;
         }
 
-
-
-        private void Terminal_Called(object sender, EventArgs e)
+        private void Terminal_Called(object sender, EventArgsCall e)
         {
-           
+            Port.State = PortState.Call;
         }
 
         private void Terminal_BeginningCall(object sender, EventArgs e)
         {
-            Port.State = PortState.Closed;
+            Port.State = PortState.Call;
         }
 
+        public bool Equals(Abonent other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return  Equals(Port, other.Port) && Equals(Terminal, other.Terminal) && Equals(TariffPlan, other.TariffPlan);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = (Port != null ? Port.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Terminal != null ? Terminal.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (TariffPlan != null ? TariffPlan.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(Abonent left, Abonent right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(Abonent left, Abonent right)
+        {
+            return !Equals(left, right);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Abonent)obj);
+        }
 
         #region event chengedTariffPlan
         public event EventHandler<EventArgs> ChangedTariffPlan;
 
-        protected virtual void OnChangedTariffPlan()
+        private void OnChangedTariffPlan()
         {
             EventHandler<EventArgs> handler = ChangedTariffPlan;
             if (handler != null) handler(this, EventArgs.Empty);
@@ -70,9 +109,9 @@ namespace TelephoneSystem
 
         public void ChangeTariffPlan(TariffPlan plan)
         {
-            if ((plan.DateConnection - this.CurrentTariffPlan.DateConnection).Days > 30)
+            if ((plan.DateConnection - this.TariffPlan.DateConnection).Days > 30)
             {
-                CurrentTariffPlan = plan;
+                TariffPlan = plan;
                 OnChangedTariffPlan();
             }
             else
@@ -80,7 +119,5 @@ namespace TelephoneSystem
                 throw new Exception("Unable to change the tariff plan.");
             }
         }
-
-        
     }
 }

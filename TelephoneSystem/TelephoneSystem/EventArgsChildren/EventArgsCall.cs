@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TelephoneSystem.ATSModel;
 
-namespace TelephoneSystem.BillingSystem
+namespace TelephoneSystem.EventArgsChildren
 {
-    public static class BillingSystem
+    public class EventArgsCall:EventArgs
     {
-
+         public int PhoneNumber { get; set; }
     }
 }
