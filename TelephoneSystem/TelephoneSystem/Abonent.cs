@@ -10,20 +10,56 @@ namespace TelephoneSystem
 {
     public class Abonent
     {
-
+        
         public Port Port { get; set; }
-     
+       
         public  Terminal Terminal { get; set; }
-
+        
         public TariffPlan CurrentTariffPlan { get; set; }
 
-        public double CurretntBalans { get; set; }
+        public int PhoneNumber { get; private set; }
 
+        public double Balance { get; set; }
+
+        private  IList<Call> _calls = new List<Call>(); 
+
+
+        public Abonent(int phoneNumber)
+        {
+            this.PhoneNumber = phoneNumber;
+
+            Terminal.BeginningCall+=Terminal_BeginningCall;
+            Terminal.Called+=Terminal_Called;
+            Terminal.FinichingCall+=Terminal_FinichingCall;
+
+            this.Port = new Port();
+        }
+
+        public IEnumerable<Call> Calls()
+        {
+            return _calls;
+        }
+
+        private void Terminal_FinichingCall(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+        private void Terminal_Called(object sender, EventArgs e)
+        {
+           
+        }
+
+        private void Terminal_BeginningCall(object sender, EventArgs e)
+        {
+            Port.State = PortState.Closed;
+        }
 
 
         #region event chengedTariffPlan
         public event EventHandler<EventArgs> ChangedTariffPlan;
-
 
         protected virtual void OnChangedTariffPlan()
         {

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TelephoneSystem.ATSModel
 {
@@ -7,13 +8,30 @@ namespace TelephoneSystem.ATSModel
     {
         private IList<Abonent> _abonents = new List<Abonent>();
 
+        private IList<Abonent> PublicAbonents()
+        {
+            return _abonents.Where(x => (x.Port.State == PortState.Open) && x.Terminal.State == TerminalState.InitialState).ToList();
+        }
 
-        private void ConnectionWith(string number)
+
+        private void ConnectionWith(int phoneNumber)
+        {
+            Abonent abonent = new Abonent(phoneNumber);
+
+            if (PublicAbonents().Contains(abonent))
+            {
+                abonent.Port.State = PortState.Closed;
+            }
+        }
+
+        public AutomaticTelephoneSystem()
         {
             
         }
 
-        # region implemention ICollection
+
+
+        # region implemention ICollection<Abonent>
         public void Add(Abonent item)
         {
             _abonents.Add(item);

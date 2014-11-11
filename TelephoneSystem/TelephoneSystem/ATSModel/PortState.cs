@@ -4,7 +4,6 @@
     {
         Open,
         Closed,
-        Locked,
-        Call
+        BLocked
     }
 }
