@@ -13,6 +13,5 @@ namespace TelephoneSystem.EventArgsChildren
         public DateTime StartCall { get; set; }
 
         public DateTime EndCall { get; set; }
-
     }
 }

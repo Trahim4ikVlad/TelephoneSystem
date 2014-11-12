@@ -15,15 +15,16 @@ namespace TelephoneSystem
 
         public DateTime TimeEndCall { get; set; }
 
-        public int Duration { get; set; }
-        
+        public int Duration
+        {
+            get { return CalculateDuration(); } 
+        }
+
         public int OutgoingNumber { get; set; }
 
-        public int IngoingNumber
-        {
-            get { return CalculateDuration(); }
-            set { CalculateDuration(); }
-        }
+        public int IngoingNumber { get; set; }
+
+        public double CostCall { get; set; }
 
 
         private int CalculateDuration()

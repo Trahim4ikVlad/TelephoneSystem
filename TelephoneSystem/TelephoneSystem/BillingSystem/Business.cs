@@ -8,7 +8,7 @@ namespace TelephoneSystem.BillingSystem
 {
     public class Business:TariffPlan
     {
-        public Business(DateTime connection, double outCostMinute, double inCostMinute) : base(connection, outCostMinute, inCostMinute)
+        public Business(DateTime connection, double outCostMinute) : base(connection, outCostMinute)
         {
         }
     }

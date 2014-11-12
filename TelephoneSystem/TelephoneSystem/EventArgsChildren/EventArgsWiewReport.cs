@@ -8,5 +8,11 @@ namespace TelephoneSystem.EventArgsChildren
 {
     public class EventArgsWiewReport:EventArgs
     {  
+        public  int NumberMonth { get; set; }
+
+        public EventArgsWiewReport(int month)
+        {
+            this.NumberMonth = month;
+        }
     }
 }

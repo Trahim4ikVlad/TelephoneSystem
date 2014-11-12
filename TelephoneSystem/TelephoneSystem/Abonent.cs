@@ -36,7 +36,6 @@ namespace TelephoneSystem
         protected virtual void OnCall()
         {
             EventHandler<EventArgsCall> handler = Called;
-            
             argsCall.StartCall = DateTime.Now;
 
             if (handler != null) handler(this, argsCall);
@@ -52,9 +51,8 @@ namespace TelephoneSystem
         public void StartCall(int numberPhone)
         {
             this.Terminal.State = TerminalState.CallState;
-            this.Port.State = PortState.Call;
-
             OnStartCall(numberPhone);
+            
         }
 
         public void Call()
@@ -67,17 +65,36 @@ namespace TelephoneSystem
             OnFinishingCall();
         }
 
-        public event EventHandler<EventArgs> BrowsingCallInfo;
+        public event EventHandler<EventArgsWiewReport> BrowsingCallsInfo;
 
-        protected virtual void OnViewReportCallInfo()
+        protected virtual void OnViewReportCallInfo(int numberMonth)
         {
-            EventHandler<EventArgs> handler = BrowsingCallInfo;
-            if (handler != null) handler(this, EventArgs.Empty);
+            EventHandler<EventArgsWiewReport> handler = BrowsingCallsInfo;
+            if (handler != null) handler(this, new EventArgsWiewReport(numberMonth));
         }
 
-        public void ViewReportCallForMoth()
+        public void ViewReportCallForMoth(int numberMonth)
         {
-            OnViewReportCallInfo();
+            if (numberMonth <= 12 && numberMonth >= 1)
+            {
+                OnViewReportCallInfo(numberMonth);
+            }
+            else
+            {
+                throw new Exception("Month with this number does not exist!!");
+            }
+        }
+
+        public void ChangeTariffPlan(TariffPlan plan)
+        {
+            if ((plan.DateConnection - this.TariffPlan.DateConnection).Days > 30)
+            {
+                TariffPlan = plan;
+            }
+            else
+            {
+                throw new Exception("Unable to change the tariff plan.");
+            }
         }
 
         public Abonent(Port port, TariffPlan plan, Terminal terminal)
@@ -131,29 +148,6 @@ namespace TelephoneSystem
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
             return Equals((Abonent)obj);
-        }
-
-        #region event chengedTariffPlan
-        public event EventHandler<EventArgs> ChangedTariffPlan;
-
-        private void OnChangedTariffPlan()
-        {
-            EventHandler<EventArgs> handler = ChangedTariffPlan;
-            if (handler != null) handler(this, EventArgs.Empty);
-        }
-        #endregion
-
-        public void ChangeTariffPlan(TariffPlan plan)
-        {
-            if ((plan.DateConnection - this.TariffPlan.DateConnection).Days > 30)
-            {
-                TariffPlan = plan;
-                OnChangedTariffPlan();
-            }
-            else
-            {
-                throw new Exception("Unable to change the tariff plan.");
-            }
         }
     }
 }

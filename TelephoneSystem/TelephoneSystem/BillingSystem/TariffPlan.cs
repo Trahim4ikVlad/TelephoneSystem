@@ -10,14 +10,11 @@ namespace TelephoneSystem.BillingSystem
     {
         public double OutCallCostMinute { get; set; }
 
-        public double InCallCostMinute { get; set; }
-
         public DateTime DateConnection { get; set; }
 
-        protected TariffPlan(DateTime connection, double outCostMinute, double inCostMinute)
+        protected TariffPlan(DateTime connection, double outCostMinute)
         {
             this.OutCallCostMinute = outCostMinute;
-            this.InCallCostMinute = inCostMinute;
             this.DateConnection = connection;
         }
     }
