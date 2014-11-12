@@ -19,46 +19,82 @@ namespace TelephoneSystem
         public TariffPlan TariffPlan { get; set; }
 
 
+        public event EventHandler<EventArgsCall> BeginningCall;
+        public event EventHandler<EventArgsCall> Called;
+        public event EventHandler<EventArgsCall> FinishingCall;
+
+
+        private  EventArgsCall argsCall = new EventArgsCall();
+
+        protected virtual void OnFinishingCall()
+        {
+            EventHandler<EventArgsCall> handler = FinishingCall;
+            argsCall.EndCall = DateTime.Now;
+            if (handler != null) handler(this, argsCall);
+        }
+
+        protected virtual void OnCall()
+        {
+            EventHandler<EventArgsCall> handler = Called;
+            
+            argsCall.StartCall = DateTime.Now;
+
+            if (handler != null) handler(this, argsCall);
+        }
+
+        protected virtual void OnStartCall(int phoneNumber)
+        {
+            EventHandler<EventArgsCall> handler = BeginningCall;
+            argsCall.PhoneNumber = phoneNumber;
+            if (handler != null) handler(this, argsCall);
+        }
+
+        public void StartCall(int numberPhone)
+        {
+            this.Terminal.State = TerminalState.CallState;
+            this.Port.State = PortState.Call;
+
+            OnStartCall(numberPhone);
+        }
+
+        public void Call()
+        {
+            OnCall();
+        }
+
+        public void FinishCall()
+        {
+            OnFinishingCall();
+        }
+
+        public event EventHandler<EventArgs> BrowsingCallInfo;
+
+        protected virtual void OnViewReportCallInfo()
+        {
+            EventHandler<EventArgs> handler = BrowsingCallInfo;
+            if (handler != null) handler(this, EventArgs.Empty);
+        }
+
+        public void ViewReportCallForMoth()
+        {
+            OnViewReportCallInfo();
+        }
+
         public Abonent(Port port, TariffPlan plan, Terminal terminal)
         {
             this.Port = port;
             this.TariffPlan = plan;
             this.Terminal = terminal;
-            SubscribeToEvents();
-        }
-
-        private void SubscribeToEvents()
-        {
-            Terminal.BeginningCall += Terminal_BeginningCall;
-            Terminal.Called += Terminal_Called;
-            Terminal.FinishingCall += Terminal_FinishingCall;            
         }
 
         public void DisconnectFromPort()
         {
-        
             this.Port.State = PortState.Disabled;
-        
         }
 
         public void ConnectToPort()
         {
             this.Port.State = PortState.Connected;
-        }
-
-        private void Terminal_FinishingCall(object sender, EventArgs e)
-        {
-            Port.State = PortState.Connected;
-        }
-
-        private void Terminal_Called(object sender, EventArgsCall e)
-        {
-            Port.State = PortState.Call;
-        }
-
-        private void Terminal_BeginningCall(object sender, EventArgs e)
-        {
-            Port.State = PortState.Call;
         }
 
         public bool Equals(Abonent other)

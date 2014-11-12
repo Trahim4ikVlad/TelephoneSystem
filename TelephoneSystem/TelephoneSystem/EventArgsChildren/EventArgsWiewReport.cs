@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TelephoneSystem.ATSModel
+namespace TelephoneSystem.EventArgsChildren
 {
-    public enum TerminalState
-    {
-        InitialState,
-        CallState
+    public class EventArgsWiewReport:EventArgs
+    {  
     }
 }

@@ -19,9 +19,17 @@ namespace TelephoneSystem
         
         public int OutgoingNumber { get; set; }
 
-        public int IngoingNumber { get; set; }
+        public int IngoingNumber
+        {
+            get { return CalculateDuration(); }
+            set { CalculateDuration(); }
+        }
 
 
+        private int CalculateDuration()
+        {
+            return (TimeEndCall - TimeStartCall).Minutes;
+        }
 
         public CallInfo(DateTime starCall, DateTime endCall, int ingoingNumber, int outgoingNumber)
         {

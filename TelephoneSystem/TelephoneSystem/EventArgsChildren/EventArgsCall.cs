@@ -8,6 +8,11 @@ namespace TelephoneSystem.EventArgsChildren
 {
     public class EventArgsCall:EventArgs
     {
-         public int PhoneNumber { get; set; }
+        public int PhoneNumber { get; set; }
+
+        public DateTime StartCall { get; set; }
+
+        public DateTime EndCall { get; set; }
+
     }
 }

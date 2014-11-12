@@ -8,18 +8,9 @@ namespace TelephoneSystem.ATSModel
 {
     public class AutomaticTelephoneSystem
     {
+
         private IList<Abonent> _abonents = new List<Abonent>();
-        
         private  IList<CallInfo> _callsInfo = new List<CallInfo>();
-
-        //отчет по абоненту
-        public IList<CallInfo> FilterBy(Abonent abonent)
-        {
-
-         return   _callsInfo.Where(
-                x => x.IngoingNumber == abonent.Port.PhoneNumber || x.OutgoingNumber == abonent.Port.PhoneNumber)
-                .ToList();
-        }
 
         private IList<Abonent> PublicAbonents()
         {
@@ -31,16 +22,62 @@ namespace TelephoneSystem.ATSModel
         {
             if(!_abonents.Contains(item))
             _abonents.Add(item);
-            item.Terminal.FinishingCall+=Terminal_FinishingCall;
-
+            SubscriberEvents(item);
         }
 
-        private void Terminal_FinishingCall(object sender, EventArgsFinishCall e)
+        private void SubscriberEvents(Abonent item)
         {
-            AddCallInfo(e.CallInfo);
+            item.BeginningCall += Connection;
+            item.Called += Call;
+            item.FinishingCall += Finish;
         }
 
-        public void AddCallInfo(CallInfo info)
+        private void Finish(object sender, EventArgsCall e)
+        {
+          //добавить Callinfo  в список
+        }
+
+
+        private void Call(object sender, EventArgsCall e)
+        {
+            //найти абонента по номеру и изменить состояние его порта и терминала
+        }
+        
+        
+        ////////////////////////////////////
+        private void Connection(object sender, EventArgsCall e)
+        {
+            // проверить доступен ли абонент которому звонит и порт, иначе сгенерить исключение
+        }
+
+        public void ProvideReportToSubscriber(object sender, EventArgs e)
+        {
+            var abonent = sender as Abonent;
+
+            if (abonent != null)
+            {
+
+                var infos =
+                    from info in _callsInfo
+                    where
+                        info.IngoingNumber == abonent.Port.PhoneNumber ||
+                        info.OutgoingNumber == abonent.Port.PhoneNumber
+                    select new
+                    {
+                        info.Duration,
+                        info.TimeStartCall
+                    };
+
+
+                var callinfos =
+                    _callsInfo.Where(
+                        x => (x.IngoingNumber == abonent.Port.PhoneNumber || x.OutgoingNumber == abonent.Port.PhoneNumber) 
+                        );
+            }
+
+       }
+
+        private void AddCallInfo(CallInfo info)
         {
             _callsInfo.Add(info);
         }
