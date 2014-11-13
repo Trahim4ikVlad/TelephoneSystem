@@ -8,7 +8,6 @@ namespace TelephoneSystem.ATSModel
 {
     public class AutomaticTelephoneSystem
     {
-
         private IList<Abonent> _abonents = new List<Abonent>();
         private  IList<CallInfo> _callsInfo = new List<CallInfo>();
 
@@ -35,26 +34,67 @@ namespace TelephoneSystem.ATSModel
             item.Called += Call;
             item.FinishingCall += RegistrationCall;
             item.BrowsingCallsInfo += ProvideReportToSubscriber;
+            item.FiltringCallByAbonent+=Abonent_FiltringCallByAbonent;
+            item.FiltringCallByDate+=Abonent_FiltringCallByDate;
         }
 
-        private void RegistrationCall(object sender, EventArgsCall e)
+        private void Abonent_FiltringCallByDate(object sender, EventArgsFilterDate e)
         {
             var abonent = sender as Abonent;
 
             if (abonent != null)
             {
-                CallInfo call = new CallInfo(e.StartCall, e.EndCall, abonent.Port.PhoneNumber, e.PhoneNumber);
-                call.CostCall = call.Duration*abonent.TariffPlan.OutCallCostMinute;
-                
-                this.AddCallInfo(call);
-                Console.WriteLine("АТС:  Звонок успешно зарегистрирован");
-                abonent.Port.State = PortState.Connected;
-                abonent.Terminal.State = TerminalState.InitialState;
+                Console.WriteLine("Filtering by date " + e.Date);
+                var callsinfo =
+                    _callsInfo.Where(x => x.TimeStartCall == e.Date).ToList();
+                foreach (var info in callsinfo)
+                {
+                    Console.WriteLine("Date call: " + info.TimeStartCall.ToShortDateString() + " Cost call: " + info.CostCall +
+                        " Duration: " + info.Duration + "Abonent: " + info.IngoingNumber
+                        );
+                }
             }
+        }
 
-            var inAbonent = _abonents.First(x => x.Port.PhoneNumber == e.PhoneNumber);
-            if (inAbonent != null)
+        private void Abonent_FiltringCallByAbonent(object sender, EventArgsFilterAbonent e)
+        {
+            var abonent = sender as Abonent;
+
+            if (abonent != null)
             {
+                Console.WriteLine("Filtering subscriber " + e.Number);
+                var callsinfo =
+                    _callsInfo.Where(x => x.IngoingNumber == e.Number || x.OutgoingNumber == e.Number).ToList();
+                foreach (var info in callsinfo)
+                {
+                    Console.WriteLine("Date call: " + info.TimeStartCall.ToShortDateString() + " Cost call: " + info.CostCall +
+                        " Duration: "+ info.Duration
+                        );
+                }
+            }
+        }
+
+        private void RegistrationCall(object sender, EventArgsCall e)
+        {
+            var abonent = sender as Abonent;
+            CallInfo call;
+
+            var outAbonent = _abonents.First(x => x.Port.PhoneNumber == e.OutPhoneNumber);
+            var inAbonent = _abonents.First(x => x.Port.PhoneNumber == e.InPhoneNumber);
+
+            if (outAbonent != null && inAbonent!=null)
+            {
+
+               call = new CallInfo(e.StartCall, e.EndCall, e.InPhoneNumber, e.OutPhoneNumber);
+               call.CostCall = call.Duration * outAbonent.TariffPlan.OutCallCostMinute; 
+              
+                this.AddCallInfo(call);
+
+                Console.WriteLine("АТС:  Звонок успешно зарегистрирован");
+
+                outAbonent.Port.State = PortState.Connected;
+                outAbonent.Terminal.State = TerminalState.InitialState;
+
                 inAbonent.Terminal.State = TerminalState.CallState;
                 inAbonent.Port.State = PortState.Connected;
             }
@@ -66,7 +106,7 @@ namespace TelephoneSystem.ATSModel
             
             if (outAbonent != null)
             {
-                var inAbonent = _abonents.First(x => x.Port.PhoneNumber == e.PhoneNumber) as Abonent;
+                var inAbonent = _abonents.First(x => x.Port.PhoneNumber == e.InPhoneNumber) as Abonent;
 
                 if (inAbonent != null)
                 {
@@ -84,7 +124,7 @@ namespace TelephoneSystem.ATSModel
             {
                 outAbonent.Port.State = PortState.Call;
 
-                Abonent inAbonent = PublicAbonents().First(x => x.Port.PhoneNumber == e.PhoneNumber);
+                Abonent inAbonent = PublicAbonents().First(x => x.Port.PhoneNumber == e.InPhoneNumber);
 
                 if (inAbonent != null)
                 {
@@ -114,7 +154,13 @@ namespace TelephoneSystem.ATSModel
                          &&x.TimeStartCall.Month == e.NumberMonth
                     ).ToList();
             }
-          //как быть в такой ситуации?
+
+            foreach (CallInfo callInfo in callInfos)
+            {
+                Console.WriteLine("CostCall:" + callInfo.CostCall + " Ingoing :" + callInfo.IngoingNumber 
+                    +" Outgoing:" + callInfo.OutgoingNumber);
+            }
+
         }
 
         private void AddCallInfo(CallInfo info)
@@ -135,6 +181,18 @@ namespace TelephoneSystem.ATSModel
             }
 
             return found;
+        }
+
+        public void WithdrawMoney()
+        {
+            foreach (Abonent abonent in _abonents)
+            {
+                var cost = _callsInfo.Where(x => x.OutgoingNumber == abonent.Port.PhoneNumber).Sum(x=>x.CostCall);      
+                abonent.Port.Balance = abonent.Port.Balance - cost;
+
+                if(abonent.Port.Balance <= 0)
+                    abonent.Port.State = PortState.BLocked;
+            }
         }
     }
 }

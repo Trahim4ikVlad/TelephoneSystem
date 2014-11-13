@@ -18,11 +18,24 @@ namespace TelephoneSystem
 
         public TariffPlan TariffPlan { get; set; }
 
-
         public event EventHandler<EventArgsCall> BeginningCall;
         public event EventHandler<EventArgsCall> Called;
         public event EventHandler<EventArgsCall> FinishingCall;
+        public event EventHandler<EventArgsWiewReport> BrowsingCallsInfo;
+        public event EventHandler<EventArgsFilterAbonent> FiltringCallByAbonent;
 
+        public event EventHandler<EventArgsFilterDate> FiltringCallByDate;
+
+        protected virtual void OnFiltringCallByDate(DateTime date)
+        {
+            EventHandler<EventArgsFilterDate> handler = FiltringCallByDate;
+            if (handler != null) handler(this, new EventArgsFilterDate(){Date = date});
+        }
+
+        public void FilterByDate(DateTime date)
+        {
+            OnFiltringCallByDate(date);
+        }
 
         private  EventArgsCall argsCall = new EventArgsCall();
 
@@ -44,7 +57,9 @@ namespace TelephoneSystem
         protected virtual void OnStartCall(int phoneNumber)
         {
             EventHandler<EventArgsCall> handler = BeginningCall;
-            argsCall.PhoneNumber = phoneNumber;
+            argsCall.InPhoneNumber = phoneNumber;
+            argsCall.OutPhoneNumber = this.Port.PhoneNumber;
+
             if (handler != null) handler(this, argsCall);
         }
 
@@ -65,7 +80,13 @@ namespace TelephoneSystem
             OnFinishingCall();
         }
 
-        public event EventHandler<EventArgsWiewReport> BrowsingCallsInfo;
+       
+       
+        protected virtual void OnFiltringCall(int number)
+        {
+            EventHandler<EventArgsFilterAbonent> handler = FiltringCallByAbonent;
+            if (handler != null) handler(this, new EventArgsFilterAbonent(){Number = number});
+        }
 
         protected virtual void OnViewReportCallInfo(int numberMonth)
         {
@@ -84,7 +105,7 @@ namespace TelephoneSystem
                 throw new Exception("Month with this number does not exist!!");
             }
         }
-
+        
         public void ChangeTariffPlan(TariffPlan plan)
         {
             if ((plan.DateConnection - this.TariffPlan.DateConnection).Days > 30)
@@ -95,6 +116,11 @@ namespace TelephoneSystem
             {
                 throw new Exception("Unable to change the tariff plan.");
             }
+        }
+
+        public void FilterByAbonent(int number)
+        {
+            OnFiltringCall(number);
         }
 
         public Abonent(Port port, TariffPlan plan, Terminal terminal)
@@ -112,6 +138,15 @@ namespace TelephoneSystem
         public void ConnectToPort()
         {
             this.Port.State = PortState.Connected;
+        }
+
+        public void FillUpBalance(double sumPayment)
+        {
+            this.Port.Balance = this.Port.Balance + sumPayment;
+            if (this.Port.Balance > 0)
+            {
+                this.Port.State = PortState.Connected;
+            }
         }
 
         public bool Equals(Abonent other)

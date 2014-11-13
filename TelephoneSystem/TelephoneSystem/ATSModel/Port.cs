@@ -15,10 +15,13 @@ namespace TelephoneSystem.ATSModel
 
         public int PhoneNumber { get; set; }
 
+        public double  Balance { get; set; }
+
         public Port(int number)
         {
             this.PhoneNumber = number;
             this.State = PortState.Connected;
+            this.Balance = 0;
         }
 
         public override bool Equals(object obj)

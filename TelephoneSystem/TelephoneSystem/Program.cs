@@ -30,7 +30,10 @@ namespace TelephoneSystem
             c.StartCall(2000);
             c.Call();
             c.FinishCall();
-     
+
+            a.ViewReportCallForMoth(11);
+
+            a.FilterByAbonent(3000);
         }
 
        
